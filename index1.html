@@ -8,6 +8,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
+
+
 <style type="text/css">
     .clearfix{*zoom:1}.clearfix:before,.clearfix:after{display:table;content:"";line-height:0}
 .clearfix:after{clear:both}
@@ -1669,6 +1671,7 @@ div#notebook {
         }
     });
     </script>
+    <script>jQuery(".input").hide()</script>
     <!-- End of mathjax configuration -->
 
 </head>
@@ -1708,46 +1711,11 @@ In&nbsp;[1]:
 <span class="kn">import</span> <span class="nn">urllib2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.stats.mstats</span> <span class="kn">import</span> <span class="n">kurtosis</span><span class="p">,</span><span class="n">skew</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">matplotlib.mlab</span> <span class="kn">as</span> <span class="nn">mlab</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">31354</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">prepare_yahoo_data</span><span class="p">():</span>
-    <span class="n">url_AMZN</span> <span class="o">=</span> <span class="s">&#39;http://real-chart.finance.yahoo.com/table.csv?s=AMZN&amp;a=01&amp;b=1&amp;c=2000&amp;d=01&amp;e=2&amp;f=2015&amp;g=m&amp;ignore=.csv&#39;</span>
-    <span class="n">url_DLTR</span> <span class="o">=</span> <span class="s">&#39;http://real-chart.finance.yahoo.com/table.csv?s=DLTR&amp;a=01&amp;b=1&amp;c=2000&amp;d=01&amp;e=2&amp;f=2015&amp;g=m&amp;ignore=.csv&#39;</span>
-    <span class="n">url_JACK</span> <span class="o">=</span> <span class="s">&#39;http://real-chart.finance.yahoo.com/table.csv?s=JACK&amp;a=01&amp;b=1&amp;c=2000&amp;d=01&amp;e=2&amp;f=2015&amp;g=m&amp;ignore=.csv&#39;</span>
-    <span class="n">url_BBBY</span> <span class="o">=</span> <span class="s">&#39;http://real-chart.finance.yahoo.com/table.csv?s=BBBY&amp;a=01&amp;b=1&amp;c=2000&amp;d=01&amp;e=2&amp;f=2015&amp;g=m&amp;ignore=.csv&#39;</span>
-    <span class="n">url_GSPC</span> <span class="o">=</span> <span class="s">&#39;http://real-chart.finance.yahoo.com/table.csv?s=^GSPC&amp;a=01&amp;b=1&amp;c=2000&amp;d=01&amp;e=2&amp;f=2015&amp;g=m&amp;ignore=.csv&#39;</span>
-    
-    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url_AMZN</span><span class="p">)</span>
-    <span class="n">cr</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-    <span class="n">amzn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cr</span><span class="p">])</span>
-
-    <span class="n">AMZN</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">amzn</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-
-    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url_DLTR</span><span class="p">)</span>
-    <span class="n">cr</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-    <span class="n">dltr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cr</span><span class="p">])</span>
-    <span class="n">DLTR</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dltr</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-    
-    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url_JACK</span><span class="p">)</span>
-    <span class="n">cr</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-    <span class="n">jack</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cr</span><span class="p">])</span>
-    <span class="n">JACK</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">jack</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-    
-    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url_BBBY</span><span class="p">)</span>
-    <span class="n">cr</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-    <span class="n">bbby</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cr</span><span class="p">])</span>
-    <span class="n">BBBY</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bbby</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">6</span><span class="p">]]</span>
-    
-    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url_GSPC</span><span class="p">)</span>
-    <span class="n">cr</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-    <span class="n">gspc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cr</span><span class="p">])</span>
-    <span class="n">GSPC</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bbby</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">6</span><span class="p">]]</span>
-    <span class="k">return</span> <span class="n">AMZN</span><span class="p">,</span><span class="n">DLTR</span><span class="p">,</span><span class="n">JACK</span><span class="p">,</span><span class="n">BBBY</span><span class="p">,</span><span class="n">GSPC</span>
 </pre></div>
 
 </div>
@@ -1781,16 +1749,37 @@ In&nbsp;[2]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="c"># get monthly adjusted close data for AMZN, DLTR, JACK, BBBY, GSPC</span>
-<span class="n">AMZN</span><span class="p">,</span><span class="n">DLTR</span><span class="p">,</span><span class="n">JACK</span><span class="p">,</span><span class="n">BBBY</span><span class="p">,</span><span class="n">GSPC</span> <span class="o">=</span> <span class="n">prepare_yahoo_data</span><span class="p">()</span>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">prepare_yahoo_data</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span><span class="n">sm</span><span class="p">,</span><span class="n">sy</span><span class="p">,</span> <span class="n">ed</span><span class="p">,</span><span class="n">em</span><span class="p">,</span><span class="n">ey</span><span class="p">,</span> <span class="n">freq</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    symbol: stock symbol</span>
+<span class="sd">    sd,sm,sy: start day/mth/yr of data. MUST BE IN INTEGER because I&#39;m too lazy to write checks.</span>
+<span class="sd">    ed: end d/m/y of data. MUST BE IN INTEGER because I&#39;m too lazy to write checks.</span>
+<span class="sd">    freq: available options are d(day),m(month),y(year),v(dividend only).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">url</span> <span class="o">=</span> <span class="s">&quot;http://real-chart.finance.yahoo.com/table.csv?s=</span><span class="si">%s</span><span class="s">&amp;a=</span><span class="si">%s</span><span class="s">&amp;b=</span><span class="si">%s</span><span class="s">&amp;c=</span><span class="si">%s</span><span class="s">&amp;d=</span><span class="si">%s</span><span class="s">&amp;e=</span><span class="si">%s</span><span class="s">&amp;f=</span><span class="si">%s</span><span class="s">&amp;g=</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span><span class="n">sm</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">sd</span><span class="p">,</span><span class="n">sy</span><span class="p">,</span><span class="n">em</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">ed</span><span class="p">,</span><span class="n">ey</span><span class="p">,</span><span class="n">freq</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">cr</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cr</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">to_float</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>
+
+<span class="c"># get monthly adjusted close data for AMZN, DLTR, JACK, BBBY</span>
+<span class="n">AMZN</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">prepare_yahoo_data</span><span class="p">(</span><span class="s">&quot;AMZN&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2015</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">6</span><span class="p">])</span>
+<span class="n">DLTR</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">prepare_yahoo_data</span><span class="p">(</span><span class="s">&quot;DLTR&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2015</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">JACK</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">prepare_yahoo_data</span><span class="p">(</span><span class="s">&quot;AMZN&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2015</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">BBBY</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">prepare_yahoo_data</span><span class="p">(</span><span class="s">&quot;BBBY&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2015</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">6</span><span class="p">])</span>
 
 <span class="c"># Assets return</span>
 <span class="n">monthly_return</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">A</span><span class="p">:[(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
 <span class="n">r_AMZN</span> <span class="o">=</span> <span class="n">monthly_return</span><span class="p">(</span><span class="n">AMZN</span><span class="p">)</span>
 <span class="n">r_DLTR</span> <span class="o">=</span> <span class="n">monthly_return</span><span class="p">(</span><span class="n">DLTR</span><span class="p">)</span>
 <span class="n">r_JACK</span> <span class="o">=</span> <span class="n">monthly_return</span><span class="p">(</span><span class="n">JACK</span><span class="p">)</span>
-<span class="n">r_BBBY</span> <span class="o">=</span> <span class="n">monthly_return</span><span class="p">(</span><span class="n">BBBY</span><span class="p">)</span>  
-        
+<span class="n">r_BBBY</span> <span class="o">=</span> <span class="n">monthly_return</span><span class="p">(</span><span class="n">BBBY</span><span class="p">)</span>
+
 <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">r_AMZN</span><span class="p">,</span><span class="n">r_DLTR</span><span class="p">,</span><span class="n">r_JACK</span><span class="p">,</span><span class="n">r_BBBY</span><span class="p">)))</span>
 <span class="k">print</span>
 <span class="k">print</span> <span class="s">&quot;Answer: &quot;</span>
@@ -1827,7 +1816,7 @@ DLTR Stats:
 mean: 21.741160221, std: 17.5851659699
 
 JACK Stats: 
-mean: 24.0029281768, std: 14.6230268628
+mean: 113.294198895, std: 105.829370288
 
 BBBY Stats: 
 mean: 42.5852486188, std: 15.2647721613
@@ -1835,10 +1824,10 @@ mean: 42.5852486188, std: 15.2647721613
 
 Covariance matrix of the monthly returns of the stocks:
 
-[ 0.02200357  0.00451233  0.00047926  0.00490165]
-[ 0.00451233  0.00970237  0.00152817  0.00335945]
-[ 0.00047926  0.00152817  0.00680807  0.00163685]
-[ 0.00490165  0.00335945  0.00163685  0.00836393]
+[ 0.02200357  0.00451233  0.02200357  0.00490165]
+[ 0.00451233  0.00970237  0.00451233  0.00335945]
+[ 0.02200357  0.00451233  0.02200357  0.00490165]
+[ 0.00490165  0.00335945  0.00490165  0.00836393]
 
 </pre>
 </div>
@@ -1907,8 +1896,8 @@ In&nbsp;[3]:
 
 Answer:
 
-Portfolio expected return: 0.0163932174945
-Portfolio std:0.0705838900783
+Portfolio expected return: 0.0175788388036
+Portfolio std:0.0969714531902
 
 </pre>
 </div>
@@ -1933,7 +1922,7 @@ Portfolio std:0.0705838900783
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Consider a portfolio with 𝑤 invested in Amazon and 1 − 𝑤 invested in Bed Bath &amp; Beyond. Plot the feasible set in a mean standard deviation diagram. Compute 𝑤 that corresponds to the minimum variance portfolio. Credit is not given to hand-plotted feasible set.</p>
+<p>onsider a portfolio with 𝑤 invested in Amazon and 1 − 𝑤 invested in Bed Bath &amp; Beyond. Plot the feasible set in a mean standard deviation diagram. Compute 𝑤 that corresponds to the minimum variance portfolio. Credit is not given to hand-plotted feasible set.</p>
 </div>
 </div>
 </div>
@@ -1956,7 +1945,7 @@ In&nbsp;[4]:
 <span class="n">p_mean</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">*</span><span class="n">mean_A</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">w</span><span class="p">)</span><span class="o">*</span><span class="n">mean_B</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">W</span><span class="p">]</span>
 <span class="n">p_std</span> <span class="o">=</span> <span class="p">[</span><span class="n">var_A</span><span class="o">*</span><span class="n">w</span><span class="o">*</span><span class="n">w</span> <span class="o">+</span> <span class="n">var_B</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">w</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">w</span><span class="p">)</span><span class="o">+</span><span class="n">cov_AB</span><span class="o">*</span><span class="n">w</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">W</span><span class="p">]</span>
 
-<span class="p">[[</span><span class="n">min_w</span><span class="p">,</span><span class="n">risk</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">p_std</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="nb">min</span><span class="p">(</span><span class="n">p_std</span><span class="p">)]</span>
+<span class="n">min_w</span> <span class="o">=</span> <span class="p">[</span><span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">p_std</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="nb">min</span><span class="p">(</span><span class="n">p_std</span><span class="p">)]</span>
 
 <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Answer:</span><span class="se">\n</span><span class="s">&quot;</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">p_std</span><span class="p">,</span> <span class="n">p_mean</span><span class="p">,</span> <span class="s">&#39;r.&#39;</span><span class="p">)</span>
@@ -1964,8 +1953,7 @@ In&nbsp;[4]:
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&quot;p_stdev&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&quot;p_mean&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s"> Optimal w: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">min_w</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-<span class="k">print</span> <span class="s">&quot;Corresponding risk: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">risk</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s"> Optimal w: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="k">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">min_w</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 <span class="k">print</span>
 </pre></div>
 
@@ -2183,8 +2171,7 @@ YjEzs0L9f0EA9HEIumnUAAAAAElFTkSuQmCC
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
 
- Optimal w: 0.23
-Corresponding risk: 0.00699
+ Optimal w: [ 0.23]
 
 
 </pre>
@@ -2221,7 +2208,9 @@ In&nbsp;[5]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">r_AMZN</span><span class="p">,</span><span class="n">r_DLTR</span><span class="p">,</span><span class="n">r_JACK</span><span class="p">,</span><span class="n">r_BBBY</span><span class="p">]</span>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">r_AMZN</span><span class="p">,</span><span class="n">r_DLTR</span><span class="p">,</span><span class="n">r_JACK</span><span class="p">,</span><span class="n">r_BBBY</span><span class="p">]</span>
 <span class="n">portf_mean_unweighted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">r_AMZN</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">r_DLTR</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">r_JACK</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">r_BBBY</span><span class="p">)])</span>
 
 <span class="c">## objective function: minimize portfolio std</span>
@@ -2238,24 +2227,14 @@ In&nbsp;[5]:
       <span class="p">{</span><span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;eq&#39;</span><span class="p">,</span> <span class="s">&#39;fun&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">W</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">portf_mean_unweighted</span><span class="o">*</span><span class="n">W</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.016</span><span class="p">})</span>
 
 <span class="c">## Optimize result</span>
+<span class="k">print</span> <span class="s">&quot;Optimization start...</span><span class="se">\n</span><span class="s">&quot;</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">portf_std</span><span class="p">,</span><span class="n">W</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="n">c_</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;SLSQP&#39;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">b_</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;disp&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})</span>
+
+<span class="n">W</span><span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
 <span class="k">print</span> 
 <span class="k">print</span> <span class="s">&quot;Answer:&quot;</span>
 <span class="k">print</span>
-<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s"> Part 1: Minimum variance portfolio WITHOUT expected return</span><span class="se">\n</span><span class="s">&quot;</span>
-
-<span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">portf_std</span><span class="p">,</span><span class="n">W</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="n">c_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;SLSQP&#39;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">b_</span><span class="p">)</span>
-<span class="n">W</span><span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
 <span class="k">print</span> <span class="s">&quot;Weight:</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="k">W</span>
-<span class="k">print</span> <span class="s">&quot;Corresponding mean: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span> <span class="nb">sum</span><span class="p">(</span><span class="n">W</span> <span class="o">*</span> <span class="n">portf_mean_unweighted</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;Corresponding std: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="k">sum</span><span class="p">([</span><span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">W</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="n">j</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)])</span>
-
-<span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s"> Part 2: Minimum variance portfolio with expected return of 1.6% </span><span class="se">\n</span><span class="s">&quot;</span>
-
-
-<span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">portf_std</span><span class="p">,</span><span class="n">W</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="n">c_</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;SLSQP&#39;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">b_</span><span class="p">)</span>
-<span class="n">W</span><span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
-<span class="k">print</span> <span class="s">&quot;Weight:</span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="k">W</span>
-<span class="k">print</span> <span class="s">&quot;Corresponding mean: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span> <span class="nb">sum</span><span class="p">(</span><span class="n">W</span> <span class="o">*</span> <span class="n">portf_mean_unweighted</span><span class="p">)</span>
 <span class="k">print</span> <span class="s">&quot;Corresponding std: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="k">sum</span><span class="p">([</span><span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">W</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="n">j</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)])</span>
 </pre></div>
 
@@ -2270,21 +2249,18 @@ In&nbsp;[5]:
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
+Optimization start...
+
+Optimization terminated successfully.    (Exit mode 0)
+            Current function value: 0.00624631543019
+            Iterations: 6
+            Function evaluations: 36
+            Gradient evaluations: 6
 
 Answer:
 
-
- Part 1: Minimum variance portfolio WITHOUT expected return
-
-Weight:[ 0.06809668  0.21029961  0.46345357  0.25815014]
-Corresponding mean: 0.0154547766407
-Corresponding std: 0.0039369523494
-
- Part 2: Minimum variance portfolio with expected return of 1.6% 
-
-Weight:[ 0.12612636  0.2498223   0.4715177   0.15253363]
-Corresponding mean: 0.0159999999983
-Corresponding std: 0.00404526983635
+Weight:[ 0.07756362  0.46318965  0.0775636   0.38168313]
+Corresponding std: 0.00624631543019
 
 </pre>
 </div>
@@ -2320,7 +2296,8 @@ In&nbsp;[6]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="n">r_GSPC</span> <span class="o">=</span> <span class="n">monthly_return</span><span class="p">(</span><span class="n">GSPC</span><span class="p">)</span>
+<div class="highlight"><pre><span class="n">GSPC</span> <span class="o">=</span> <span class="n">to_float</span><span class="p">(</span><span class="n">prepare_yahoo_data</span><span class="p">(</span><span class="s">&quot;^GSPC&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2015</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">6</span><span class="p">])</span>
+<span class="n">r_GSPC</span> <span class="o">=</span> <span class="n">monthly_return</span><span class="p">(</span><span class="n">GSPC</span><span class="p">)</span>
 <span class="n">beta</span> <span class="o">=</span> <span class="p">[(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">r_GSPC</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">r_GSPC</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">))]</span>
 
 <span class="n">beta</span>
@@ -2347,7 +2324,7 @@ In&nbsp;[6]:
 
 Answer: 
 Beta from Calculation for AMZN, DLTR, JACK, BBBY:
-[0.59, 0.4, 0.2, 1.01]
+[1.65, 0.9, 1.65, 1.04]
 
 Beta from Yahoo finance for AMZN, DLTR, JACK, BBBY:
 [1.27, 0.72, 0.23, 0.69]
